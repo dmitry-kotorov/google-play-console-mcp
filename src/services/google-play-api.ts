@@ -58,7 +58,15 @@ export async function apiRequest<T>(
 
 // ── Convenience helpers keyed to actual API endpoints ──────────────────
 
-import type { AppEdit, Listing, ListingsListResponse, ListingPatch } from "../types.js";
+import type {
+  AppEdit,
+  Listing,
+  ListingsListResponse,
+  ListingPatch,
+  Review,
+  ReviewsListResponse,
+  ReviewsReplyResponse,
+} from "../types.js";
 
 // -- Edits --
 
@@ -165,5 +173,53 @@ export async function deleteAllListings(
   await apiRequest<void>(
     `${packageName}/edits/${editId}/listings`,
     "DELETE"
+  );
+}
+
+// -- Reviews (not part of edits — operate directly on the app) --
+
+export async function listReviews(
+  packageName: string,
+  options?: {
+    translationLanguage?: string;
+    maxResults?: number;
+    startIndex?: number;
+    token?: string;
+  }
+): Promise<ReviewsListResponse> {
+  const params = new URLSearchParams();
+  if (options?.translationLanguage)
+    params.set("translationLanguage", options.translationLanguage);
+  if (options?.maxResults !== undefined)
+    params.set("maxResults", String(options.maxResults));
+  if (options?.startIndex !== undefined)
+    params.set("startIndex", String(options.startIndex));
+  if (options?.token) params.set("token", options.token);
+
+  const qs = params.toString();
+  const path = `${packageName}/reviews${qs ? `?${qs}` : ""}`;
+  return apiRequest<ReviewsListResponse>(path);
+}
+
+export async function getReview(
+  packageName: string,
+  reviewId: string,
+  translationLanguage?: string
+): Promise<Review> {
+  const qs = translationLanguage
+    ? `?translationLanguage=${encodeURIComponent(translationLanguage)}`
+    : "";
+  return apiRequest<Review>(`${packageName}/reviews/${reviewId}${qs}`);
+}
+
+export async function replyToReview(
+  packageName: string,
+  reviewId: string,
+  replyText: string
+): Promise<ReviewsReplyResponse> {
+  return apiRequest<ReviewsReplyResponse>(
+    `${packageName}/reviews/${reviewId}:reply`,
+    "POST",
+    { replyText }
   );
 }

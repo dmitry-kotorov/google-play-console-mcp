@@ -27,6 +27,80 @@ export interface ListingPatch {
   video?: string;
 }
 
+// ── Reviews ────────────────────────────────────────────────────────────
+
+export interface Timestamp {
+  seconds: string;
+  nanos?: number;
+}
+
+export interface DeviceMetadata {
+  productName?: string;
+  manufacturer?: string;
+  deviceClass?: string;
+  screenWidthPx?: number;
+  screenHeightPx?: number;
+  nativePlatform?: string;
+  screenDensityDpi?: number;
+  glEsVersion?: number;
+  cpuModel?: string;
+  cpuMake?: string;
+  ramMb?: number;
+}
+
+export interface UserComment {
+  text: string;
+  lastModified: Timestamp;
+  starRating: number;
+  reviewerLanguage?: string;
+  device?: string;
+  androidOsVersion?: number;
+  appVersionCode?: number;
+  appVersionName?: string;
+  thumbsUpCount?: number;
+  thumbsDownCount?: number;
+  deviceMetadata?: DeviceMetadata;
+  originalText?: string;
+}
+
+export interface DeveloperComment {
+  text: string;
+  lastModified: Timestamp;
+}
+
+export interface Comment {
+  userComment?: UserComment;
+  developerComment?: DeveloperComment;
+}
+
+export interface Review {
+  reviewId: string;
+  authorName: string;
+  comments: Comment[];
+}
+
+export interface ReviewsListResponse {
+  reviews?: Review[];
+  pageInfo?: {
+    totalResults: number;
+    resultPerPage: number;
+    startIndex: number;
+  };
+  tokenPagination?: {
+    nextPageToken?: string;
+    previousPageToken?: string;
+  };
+}
+
+export interface ReviewReplyResult {
+  replyText: string;
+  lastEdited: Timestamp;
+}
+
+export interface ReviewsReplyResponse {
+  result: ReviewReplyResult;
+}
+
 /** Shape of a Google service-account key file. */
 export interface ServiceAccountKey {
   type: string;

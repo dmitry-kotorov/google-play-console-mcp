@@ -15,6 +15,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerEditTools } from "./tools/edits.js";
 import { registerListingTools } from "./tools/listings.js";
+import { registerReviewTools } from "./tools/reviews.js";
 
 const server = new McpServer({
   name: "google-play-console-mcp-server",
@@ -24,6 +25,7 @@ const server = new McpServer({
 // Register all tools
 registerEditTools(server);
 registerListingTools(server);
+registerReviewTools(server);
 
 // Start on stdio
 async function main(): Promise<void> {
